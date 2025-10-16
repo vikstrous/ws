@@ -81,7 +81,13 @@ func WriteHeader(w io.Writer, h Header) error {
 		n += copy(bts[n:], h.Mask[:])
 	}
 
-	_, err := w.Write(bts[:n])
+	written, err := w.Write(bts[:n])
+	if err == nil && written == len(bts[:n]) {
+		return nil
+	}
+	if written != len(bts[:n]) {
+		return io.EOF
+	}
 
 	return err
 }
