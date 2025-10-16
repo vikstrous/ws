@@ -92,7 +92,13 @@ func WriteFrame(w io.Writer, f Frame) error {
 	if err != nil {
 		return err
 	}
-	_, err = w.Write(f.Payload)
+	n, err := w.Write(f.Payload)
+	if err == nil && n == len(f.Payload) {
+		return nil
+	}
+	if n != len(f.Payload) {
+		return io.EOF
+	}
 	return err
 }
 
